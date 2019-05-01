@@ -1,4 +1,4 @@
-# Phaser + ES6 + Webpackでゲームを作る。
+# Phaser3 + ES6（Babel） + Webpack4でゲームを作る。
 
 # DEMO
 https://yuki-sakaguchi.github.io/phaser-game/index.html
