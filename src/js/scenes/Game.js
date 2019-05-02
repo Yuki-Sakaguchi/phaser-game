@@ -12,17 +12,25 @@ import { centerGameObjects } from '../common/utils'
  */
 export default class extends Phaser.Scene {
   /**
-   * 初期化
+   * コンストラクタ
    * @constructor
    */
   constructor () {
     super({ key: 'GameScene' })
+  }
+
+  /**
+   * 初期化
+   * @method
+   */
+  init () {
     this.speed = 4
     this.oldCursor = {}
   }
 
   /**
    * ゲーム画面を構築
+   * @method
    */
   create () {
     // キャラクター追加
@@ -83,6 +91,7 @@ export default class extends Phaser.Scene {
 
   /**
    * 画面更新
+   * @method
    */
   update () {
     const cursorKeys = this.input.keyboard.createCursorKeys()

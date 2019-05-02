@@ -11,11 +11,18 @@ import WebFont from 'webfontloader'
  */
 export default class extends Phaser.Scene {
   /**
-   * 初期化
+   * コンストラクタ
    * @constructor
    */
   constructor () {
     super({ key: 'BootScene' })
+  }
+
+  /**
+   * 初期化
+   * @method
+   */
+  init () {
     this.fontsReady = false
   }
 

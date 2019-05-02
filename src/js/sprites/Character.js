@@ -12,6 +12,10 @@ import Phaser from 'phaser'
  * @param {String} asset 画像名
  */
 export default class Character extends Phaser.GameObjects.Sprite {
+  /**
+   * コンストラクタ
+   * @constructor
+   */
   constructor ({ scene, x, y, asset }) {
     super(scene, x, y, asset)
   }

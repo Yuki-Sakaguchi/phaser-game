@@ -4,7 +4,7 @@
 
 /**
  * オブジェクトをステージの真ん中に配置する
- * @param {Array} objects
+ * @param {Array<Phaser.GameObjects>} objects
  */
 export const centerGameObjects = objects => {
   objects.forEach(object => object.setOrigin(0.5))
