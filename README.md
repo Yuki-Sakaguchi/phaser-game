@@ -3,6 +3,11 @@
 # DEMO
 https://yuki-sakaguchi.github.io/phaser-game/index.html
 
+# TODO
+* ゲーム開発
+* pwa対応
+* cordoba対応
+
 # 開発
 ```
 npm run dev
@@ -30,10 +35,9 @@ npm run dev
 │   │   ├── sample1.png
 │   │   └── sample2.png
 │   ├── js
+│   │   ├── common # 共通で使うjsファイル
 │   │   ├── scenes # 各シーンごとのjsファイル
 │   │   ├── sprites # 各スプライトごとのjsファイル
-│   │   ├── config.js # 設定ファイル
-│   │   ├── utils.js # 共通関数ファイル
 │   │   └── main.js # bundle元の実行ファイル
 │   └── scss
 │       └── bundle.scss

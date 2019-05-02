@@ -1,5 +1,5 @@
 /**
- * @fileoverview よく使う共通関数
+ * @fileoverview 共通関数
  */
 
 /**
@@ -7,5 +7,5 @@
  * @param {Array} objects
  */
 export const centerGameObjects = objects => {
-  objects.forEach(object => object.anchor.setTo(0.5))
+  objects.forEach(object => object.setOrigin(0.5))
 }

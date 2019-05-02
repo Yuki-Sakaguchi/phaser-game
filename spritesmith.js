@@ -1,3 +1,7 @@
+/**
+ * @fileoverview スプライト画像作成プラグインの設定
+ */
+
 'use strict'
 
 module.exports = [

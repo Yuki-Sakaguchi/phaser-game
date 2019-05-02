@@ -8,6 +8,7 @@ import WebFont from 'webfontloader'
 /**
  * 初期表示画面クラス
  * @class
+ * @extends Phaser.Scene
  */
 export default class extends Phaser.Scene {
   /**
@@ -16,35 +17,32 @@ export default class extends Phaser.Scene {
    */
   constructor () {
     super({ key: 'BootScene' })
+    this.fontsReady = false
   }
 
   /**
-   * 事前ロード
+   * 最低限の事前ロード
    * @method
    */
   preload () {
-    this.fontsReady = false
-    this.fontsLoaded = this.fontsLoaded.bind(this)
-    this.add.text(100, 100, 'loading fonts...')
-
-    this.load.image('loaderBg', './assets/images/loader-bg.png')
-    this.load.image('loaderBar', './assets/images/loader-bar.png')
-
+    // フォントをロード
     WebFont.load({
       google: {
         families: ['Bangers']
       },
-      active: this.fontsLoaded
+      active: () => {
+        this.fontsReady = true
+      }
     })
   }
 
+  /**
+   * 準備ができたらスプラッシュページへ遷移
+   * @method
+   */
   update () {
     if (this.fontsReady) {
       this.scene.start('SplashScene')
     }
-  }
-
-  fontsLoaded () {
-    this.fontsReady = true
   }
 }
