@@ -1,0 +1,28 @@
+$stage-w: 640px;
+$stage-h: 360px;
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #222;
+}
+
+#content {
+  width: $stage-w;
+  height: $stage-h;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}

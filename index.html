@@ -2,7 +2,7 @@
 <html lang="jp">
     <head>
         <meta charset="UTF-8">
-        <title>Phaser - ES6 - Webpack</title>
+        <title>爆弾ゲーム | Phaser3 + ES6（Babel） + Webpack4</title>
         <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
         <meta name="HandheldFriendly" content="True">
         <meta name="MobileOptimized" content="320">
@@ -10,29 +10,13 @@
         <meta name="format-detection" content="telephone=no">
         <meta name="theme-color" content="#ffffff">
         <link rel="manifest" href="./manifest.json">
-        <style>
-            html,
-            body {
-                margin: 0;
-                padding: 0;
-                background: #222;
-            }
-            #content {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                position: absolute;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
-                margin: auto;
-            }
-        </style>
+        <link rel="stylesheet" href="./dist/css/bundle.css">
     </head>
     <body>
         <div id="content"></div>
         <!-- uncomment the line bellow for cordova feature -->
         <!-- <script type="text/javascript" src="cordova.js"></script> -->
-    <script type="text/javascript" src="./dist/vendor.bundle.js"></script><script type="text/javascript" src="./dist/bundle.js"></script></body>
+        <script type="text/javascript" src="./dist/js/vendor.bundle.js"></script>
+        <script type="text/javascript" src="./dist/js/bundle.js"></script>
+    </body>
 </html>

@@ -4,14 +4,14 @@ var BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 
 module.exports = {
   entry: {
-    app: [path.resolve(__dirname, 'src/main.js')],
+    app: [path.resolve(__dirname, 'src/js/main.js')],
     vendor: ['phaser']
   },
   mode: 'development',
   output: {
     pathinfo: true,
-    path: path.resolve(__dirname, 'dist'),
-    publicPath: './dist/',
+    path: path.resolve(__dirname, 'dist/js'),
+    publicPath: './dist/js/',
     filename: 'bundle.js'
   },
   watch: true,
