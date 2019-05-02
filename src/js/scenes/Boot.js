@@ -1,7 +1,6 @@
 /**
  * @fileoverview 初期表示画面
  */
-
 import Phaser from 'phaser'
 import WebFont from 'webfontloader'
 

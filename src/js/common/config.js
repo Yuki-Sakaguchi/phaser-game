@@ -1,7 +1,6 @@
 /**
  * @fileoverview 共通設定
  */
-
 import Phaser from 'phaser'
 
 export const WIDTH = 1280

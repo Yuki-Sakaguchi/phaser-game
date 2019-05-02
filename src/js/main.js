@@ -1,7 +1,6 @@
 /**
  * @fileoverview bundle元のファイル
  */
-
 'use strict'
 
 import Phaser from 'phaser'
@@ -24,7 +23,7 @@ const gameConfig = Object.assign(GAME_CONFIG, {
 /**
  * ゲーム本体
  * @class
- * @extend Phaser.Game
+ * @extends Phaser.Game
  */
 class Game extends Phaser.Game {
   /**
