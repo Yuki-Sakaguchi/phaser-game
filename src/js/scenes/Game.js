@@ -2,8 +2,9 @@
  * @fileoverview ゲーム画面
  */
 import Phaser from 'phaser'
-import { WIDTH, HEIGHT } from '../common/config'
-import { centerGameObjects } from '../common/utils'
+import { WIDTH, HEIGHT, DIRECTION } from '../common/config'
+import { Map } from '../class/Map'
+import { Character } from '../class/Character'
 
 /**
  * ゲーム画面クラス
@@ -20,73 +21,22 @@ export default class extends Phaser.Scene {
   }
 
   /**
-   * 初期化
-   * @method
-   */
-  init () {
-    this.speed = 4
-    this.oldCursor = {}
-  }
-
-  /**
    * ゲーム画面を構築
    * @method
    */
   create () {
-    // キャラクター追加
-    this.player = this.add.sprite(WIDTH / 2, HEIGHT / 2, 'sprite', 'player-3-0')
-    this.anims.create({
-      key: 'walk-left',
-      repeat: -1,
-      frameRate: 5,
-      frames: this.anims.generateFrameNames('sprite', {
-        prefix: 'player-0-',
-        start: 0,
-        end: 3
-      })
-    })
-    this.anims.create({
-      key: 'walk-back',
-      repeat: -1,
-      frameRate: 5,
-      frames: this.anims.generateFrameNames('sprite', {
-        prefix: 'player-1-',
-        start: 0,
-        end: 3
-      })
-    })
-    this.anims.create({
-      key: 'walk-right',
-      repeat: -1,
-      frameRate: 5,
-      frames: this.anims.generateFrameNames('sprite', {
-        prefix: 'player-2-',
-        start: 0,
-        end: 3
-      })
-    })
-    this.anims.create({
-      key: 'walk-front',
-      repeat: -1,
-      frameRate: 5,
-      frames: this.anims.generateFrameNames('sprite', {
-        prefix: 'player-3-',
-        start: 0,
-        end: 3
-      })
-    })
-    this.player.play('walk-front')
+    // マップ生成
+    this.map = new Map(this)
 
-    // タイトル追加
-    const text = this.add.text(
-      WIDTH / 2, 100,
-      'Phaser 3 - ES6 - Webpack ',
-      {
-        font: '64px Bangers',
-        fill: '#ffffff'
-      }
-    )
-    centerGameObjects([text])
+    // キャラクター追加
+    this.player = new Character({
+      scene: this,
+      gridX: 2,
+      gridY: 2,
+      frameName: 'player',
+      direction: DIRECTION.FRONT
+    })
+    this.player.setMap(this.map)
   }
 
   /**
@@ -95,30 +45,6 @@ export default class extends Phaser.Scene {
    */
   update () {
     const cursorKeys = this.input.keyboard.createCursorKeys()
-    if (cursorKeys.left.isDown) {
-      this.player.x -= this.speed
-      if (!this.oldCursor.left.isDown) {
-        this.player.play('walk-left')
-      }
-    }
-    if (cursorKeys.right.isDown) {
-      this.player.x += this.speed
-      if (!this.oldCursor.right.isDown) {
-        this.player.play('walk-right')
-      }
-    }
-    if (cursorKeys.up.isDown) {
-      this.player.y -= this.speed
-      if (!this.oldCursor.up.isDown) {
-        this.player.play('walk-back')
-      }
-    }
-    if (cursorKeys.down.isDown) {
-      this.player.y += this.speed
-      if (!this.oldCursor.down.isDown) {
-        this.player.play('walk-front')
-      }
-    }
-    this.oldCursor = JSON.parse(JSON.stringify(cursorKeys))
+    this.player.move(cursorKeys)
   }
 }

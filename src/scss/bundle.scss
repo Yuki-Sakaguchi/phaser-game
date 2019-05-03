@@ -1,5 +1,5 @@
 $stage-w: 640px;
-$stage-h: 384px;
+$stage-h: 350px;
 
 html,
 body {
@@ -21,6 +21,7 @@ body {
   left: 0;
   margin: auto;
   background: black;
+  overflow: hidden;
   canvas {
     display: block;
     width: 100%;

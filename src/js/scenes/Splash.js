@@ -2,8 +2,8 @@
  * @fileoverview スプラッシュ画面
  */
 import Phaser from 'phaser'
-import { WIDTH, HEIGHT } from '../common/config'
-import { centerGameObjects } from '../common/utils'
+import { WIDTH, HEIGHT, SPRITE_NAME, SPRITE_IMAGE_PATH, SPRITE_JSON_PATH } from '../common/config'
+import { centerGameObjects } from '../common/util'
 
 /**
  * スプラッシュ画面クラス
@@ -71,7 +71,7 @@ export default class extends Phaser.Scene {
     centerGameObjects([loadingText, percentText])
 
     // ゲームで使うアセットを読み込み
-    this.load.atlas('sprite', 'dist/images/sprite.png', 'dist/images/sprite.json')
+    this.load.atlas(SPRITE_NAME, SPRITE_IMAGE_PATH, SPRITE_JSON_PATH)
 
     // ロードにあわせてバーと数値を変更
     this.load.on('progress', value => {
