@@ -1,66 +1,46 @@
 /**
  * @fileoverview キャラクター
  */
-import Phaser from 'phaser'
-import { WIDTH, HEIGHT, DIRECTION, SPRITE_NAME, UNIT_SIZE_X, UNIT_SIZE_Y } from '../common/config'
+import {
+  DIRECTION,
+  UNIT_SIZE_WIDTH,
+  UNIT_SIZE_HEIGHT,
+  VERTICAL_UNIT,
+  HORIZONTAL_UNIT,
+  MAP_OBJECT,
+  MAP_TOP_OBJECT
+} from '../common/config'
 import { createFrameName, getKeyName } from '../common/util'
+import { Unit } from '../class/Unit'
+import { Bomb } from '../class/Bomb'
 
 /**
  * キャラクタークラス
  * @class
- * @extends Phaser.GameObjects.Sprite
+ * @extends Unit
  */
-export class Character extends Phaser.GameObjects.Sprite {
+export class Character extends Unit {
   /**
-   * コンストラクタ
    * @constructor
    * @param {Object}       config
-   * @param {Phaser.Scene} config.scene キャラクターを追加するシーン
-   * @param {number}       config.gridX x座標
-   * @param {number}       config.gridY y座標
-   * @param {string}       config.frameName 画像名
+   * @param {Phaser.Scene} config.scene 配置するシーン
+   * @param {number}       config.width オブジェクトの幅
+   * @param {number}       config.height オブジェクトの高さ
+   * @param {number}       config.gridX X座標
+   * @param {number}       config.gridY Y座標
+   * @param {string}       config.frameNamew 画像名
+   * @param {boolean}      config.isHit 当たり判定
    * @param {number}       config.speed キャラクターの移動スピード
    */
-  constructor ({ scene, gridX = 5, gridY = 5, frameName, speed = 4, direction = DIRECTION.FRONT }) {
-    super(scene, gridX * UNIT_SIZE_X, (gridY + 1) * UNIT_SIZE_Y, SPRITE_NAME, createFrameName(frameName, direction))
-
+  constructor ({ scene, width = UNIT_SIZE_WIDTH, height = UNIT_SIZE_HEIGHT, gridX = (HORIZONTAL_UNIT - 1) / 2, gridY = (VERTICAL_UNIT - 1) / 2, frameName, isHit = true, speed = 4, direction = DIRECTION.FRONT, zIndex = 1 }) {
+    super({ scene, width, height, gridX, gridY, frameName: createFrameName(frameName, direction), isHit, depth: zIndex })
     this.scene = scene
-    this.gridX = gridX
-    this.gridY = gridY
-    this.frameName = frameName
     this.speed = speed
     this.direction = direction
-
-    this.createAnimeFrame()
-    this.setOrigin(0.5, 1)
-    scene.add.existing(this)
-  }
-
-  /**
-   * アニメーションのframeを作成
-   */
-  createAnimeFrame () {
-    // 方向の数だけ歩くアニメーションを作成
-    for (let key in DIRECTION) {
-      this.scene.anims.create({
-        key: `walk-${key.toLowerCase()}`,
-        repeat: -1,
-        frameRate: this.speed,
-        frames: this.scene.anims.generateFrameNames(SPRITE_NAME, {
-          prefix: `${this.frameName}-${DIRECTION[key]}-`,
-          start: 0,
-          end: 3
-        })
-      })
-    }
-  }
-
-  /**
-   * マップ情報をセット
-   * @param {Object} map
-   */
-  setMap (map) {
-    this.map = map
+    this.frameName = frameName
+    this.moveX = 0
+    this.moveY = 0
+    this.numOfBomb = 12
   }
 
   /**
@@ -69,56 +49,84 @@ export class Character extends Phaser.GameObjects.Sprite {
    * @param {number} cursorKeys キーボードの入力
    */
   move (cursorKeys) {
-    let mX = 0
-    let mY = 0
-    let direction = null
+    let direction = this.direction
 
     // 移動ポイントを取得
-    if (cursorKeys.left.isDown) {
-      mX = -this.speed
-    }
-    if (cursorKeys.right.isDown) {
-      mX = this.speed
-    }
-    if (cursorKeys.up.isDown) {
-      mY = -this.speed
-    }
-    if (cursorKeys.down.isDown) {
-      mY = this.speed
-    }
-
-    // 移動の向きを取得、斜め移動の場合は縦を優先
-    if (mY > 0) {
-      direction = DIRECTION.FRONT
-    } else if (mY < 0) {
+    if (this.moveX !== 0 || this.moveY !== 0) {
+      // 移動中は反応しない
+    } else if (cursorKeys.left.isDown) {
+      this.moveX = -UNIT_SIZE_WIDTH
+      direction = DIRECTION.LEFT
+    } else if (cursorKeys.right.isDown) {
+      this.moveX = UNIT_SIZE_WIDTH
+      direction = DIRECTION.RIGHT
+    } else if (cursorKeys.up.isDown) {
+      this.moveY = -UNIT_SIZE_HEIGHT
       direction = DIRECTION.BACK
-    } else {
-      if (mX > 0) {
-        direction = DIRECTION.RIGHT
-      } else if (mX < 0) {
-        direction = DIRECTION.LEFT
-      } else {
-        direction = this.direction
-      }
+    } else if (cursorKeys.down.isDown) {
+      this.moveY = UNIT_SIZE_HEIGHT
+      direction = DIRECTION.FRONT
     }
 
-    // 向きに応じてアニメーション変更
-    if (this.direction !== direction) {
-      // 方向が変わってたらアニメーションを変更
+    // 移動後のタイル
+    let mX = Math.floor((this.x + this.moveX) / UNIT_SIZE_WIDTH)
+    let mY = Math.floor((this.y + this.moveY) / UNIT_SIZE_HEIGHT)
+
+    // 移動禁止
+    if (MAP_OBJECT[mY][mX] >= 0 || MAP_TOP_OBJECT[mY][mX] >= 0) {
+      this.moveX = 0
+      this.moveY = 0
+    }
+
+    // 向きに応じてアニメーション
+    if (this.moveX === 0 && this.moveY === 0) {
       this.direction = direction
-      this.play(`walk-${getKeyName(DIRECTION, direction).toLowerCase()}`)
-    } else if (!this.anims.isPlaying) {
-      // 方向が変わってなくてもアニメーション中じゃなければアニメーションを開始
-      this.play(`walk-${getKeyName(DIRECTION, direction).toLowerCase()}`)
-    }
-
-    // 移動距離が無ければアニメーションを止める
-    if (mX === 0 && mY === 0) {
-      this.anims.stop()
+      this.sprite.setFrame(`player-${this.direction}-0`)
+      this.sprite.anims.stop()
+    } else if (this.direction !== direction) {
+      this.direction = direction
+      this.sprite.anims.play(`walk-${getKeyName(DIRECTION, this.direction).toLowerCase()}`)
+    } else if (!this.sprite.anims.isPlaying) {
+      this.sprite.anims.play(`walk-${getKeyName(DIRECTION, this.direction).toLowerCase()}`)
     }
 
     // 位置を移動
-    this.x += mX
-    this.y += mY
+    this.x += sign(this.moveX) * this.speed
+    this.y += sign(this.moveY) * this.speed
+    this.moveX -= sign(this.moveX) * this.speed
+    this.moveY -= sign(this.moveY) * this.speed
   }
+
+  /**
+   * 爆弾を配置
+   */
+  bomb () {
+    if (this.moveX !== 0 || this.moveY !== 0) {
+      return false
+    }
+    let mX = Math.floor(this.x / UNIT_SIZE_WIDTH)
+    let mY = Math.floor(this.y / UNIT_SIZE_HEIGHT)
+    if (this.numOfBomb > 0) {
+      if (MAP_OBJECT[mY][mX] <= 0 || MAP_TOP_OBJECT[mY][mX] <= 0) {
+        MAP_OBJECT[mY][mX] = MAP_TOP_OBJECT[mY][mX] = 99
+        this.numOfBomb--
+        const bomb = new Bomb({
+          scene: this.scene,
+          gridX: mX,
+          gridY: mY,
+          frameName: 'bomb-0',
+          zIndex: 2
+        })
+      }
+    }
+  }
+}
+
+/**
+ * IE対応用のSign関数
+ */
+function sign (val) {
+  if (val === 0) return 0
+  if (val > 0) return 1
+  if (val < 0) return -1
 }

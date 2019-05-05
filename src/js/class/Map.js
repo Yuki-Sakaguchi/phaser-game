@@ -1,12 +1,7 @@
 /**
  * @fileoverview マップ
  */
-import {
-  HORIZONTAL_UNIT,
-  VERTICAL_UNIT,
-  MAP_BASE,
-  MAP_OBJECT
-} from '../common/config'
+import { HORIZONTAL_UNIT, VERTICAL_UNIT } from '../common/config'
 import { Unit } from '../class/Unit'
 
 /**
@@ -19,9 +14,12 @@ export class Map {
    * @constructor
    * @param {Phaser.Scene} scene マップを追加するシーン
    */
-  constructor (scene) {
+  constructor ({ scene, mapDate, prefix, isHit = true, zIndex = 1 }) {
     this.scene = scene
-    this.mapBase = []
+    this.mapDate = mapDate
+    this.prefix = prefix
+    this.isHit = isHit
+    this.zIndex = zIndex
     this.mapObj = []
     this.createMap()
   }
@@ -32,21 +30,19 @@ export class Map {
    */
   createMap () {
     for (let y = 0; y < VERTICAL_UNIT; y++) {
-      this.mapBase[y] = []
       this.mapObj[y] = []
       for (let x = 0; x < HORIZONTAL_UNIT; x++) {
-        // 床の生成
-        if (MAP_BASE[y][x] >= 0) {
-          this.mapBase[y][x] = new Unit(this.scene, x, y, `base-${[MAP_BASE[y][x]]}`)
-        } else {
-          this.mapBase[y][x] = MAP_BASE[y][x]
+        if (this.mapDate[y][x] < 0) {
+          continue
         }
-        // オブジェクトの生成
-        if (MAP_OBJECT[y][x] >= 0) {
-          this.mapObj[y][x] = new Unit(this.scene, x, y, `block-${[MAP_OBJECT[y][x]]}`)
-        } else {
-          this.mapObj[y][x] = MAP_OBJECT[y][x]
-        }
+        this.mapObj[y][x] = new Unit({
+          scene: this.scene,
+          gridX: x,
+          gridY: y,
+          frameName: `${this.prefix}${[this.mapDate[y][x]]}`,
+          isHit: this.isHit,
+          depth: this.zIndex
+        })
       }
     }
   }

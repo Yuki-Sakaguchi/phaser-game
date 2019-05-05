@@ -2,42 +2,85 @@
  * @fileoverview ユニット
  */
 import Phaser from 'phaser'
-import { UNIT_SIZE_X, UNIT_SIZE_Y, SPRITE_NAME } from '../common/config'
+import {
+  UNIT_SIZE_WIDTH,
+  UNIT_SIZE_HEIGHT,
+  VERTICAL_UNIT,
+  HORIZONTAL_UNIT,
+  SPRITE_NAME
+} from '../common/config'
+
+import { gridToPositionX, gridToPositionY } from '../common/util'
 
 /**
  * ユニットクラス
+ * 全てのオブジェクトの元となるクラス
  * @class
+ * @extends Phaser.GameObjects.Container
  */
-export class Unit {
+export class Unit extends Phaser.GameObjects.Container {
   /**
+   * 当たり判定用のオブジェクトと画像をコンテナに追加する
    * @constructor
-   * @param {Phaser.Scene} scene 配置するシーン
-   * @param {number} gridX X座標
-   * @param {number} gridY Y座標
-   * @param {string} frameNamew 画像名
+   * @param {Object}       config
+   * @param {Phaser.Scene} config.scene 配置するシーン
+   * @param {number}       config.width オブジェクトの幅
+   * @param {number}       config.height オブジェクトの高さ
+   * @param {number}       config.gridX X座標
+   * @param {number}       config.gridY Y座標
+   * @param {string}       config.frameNamew 画像名
+   * @param {boolean}      config.isHit 当たり判定
+   * @param {number}       config.depth z座標
    */
-  constructor (scene, gridX, gridY, frameNamew) {
+  constructor ({ scene, width = UNIT_SIZE_WIDTH, height = UNIT_SIZE_HEIGHT, gridX = (HORIZONTAL_UNIT - 1) / 2, gridY = (VERTICAL_UNIT - 1) / 2, frameName, isHit = true, depth = 1 }) {
+    super(scene, gridToPositionX(gridX), gridToPositionY(gridY))
     this.scene = scene
+    this.width = width
+    this.height = height
     this.gridX = gridX
     this.gridY = gridY
-    this.frameNamew = frameNamew
+    this.frameName = frameName
+    this.isHit = isHit
 
-    this.unit = null
-    this.createUnit()
+    // 当たり判定用の四角を生成
+    this.rect = scene.add.rectangle(0, 0, width, height, 0xffffff)
+    this.rect.alpha = 0
+    scene.add.existing(this.rect)
+    this.add(this.rect)
+
+    // 画像を生成
+    this.sprite = new Phaser.GameObjects.Sprite(scene, 0, height / 2, SPRITE_NAME, frameName)
+    this.sprite.setOrigin(0.5, 1) // 画像は下辺に揃える
+    scene.add.existing(this.sprite)
+    this.add(this.sprite)
+
+    // 当たり判定を付ける場合
+    if (isHit) {
+      scene.physics.add.existing(this.rect)
+      this.rect.body.setImmovable()
+    }
+
+    this.depth = depth
+
+    scene.add.existing(this)
   }
 
   /**
-   * ユニットを生成し、シーンに追加
+   * Unitクラスで作られたオブジェクトとの当たり判定
+   * @param {Unit} obj
    */
-  createUnit () {
-    this.unit = new Phaser.GameObjects.Sprite(
-      this.scene,
-      UNIT_SIZE_X * this.gridX + UNIT_SIZE_X / 2,
-      UNIT_SIZE_Y * (this.gridY + 1),
-      SPRITE_NAME,
-      this.frameNamew
-    )
-    this.unit.setOrigin(1)
-    this.scene.add.existing(this.unit)
+  collider (obj) {
+    if (!this.isHit) return false
+    this.scene.physics.add.collider(this.rect, obj.rect)
+  }
+
+  /**
+   * Unitクラスで作られたオブジェクトと当たった時の判定
+   * @param {Unit} obj
+   * @param {Function} func
+   */
+  overlap (obj, func) {
+    if (!this.isHit) return false
+    this.scene.physics.add.overlap(this.rect, obj.rect, func, null, this.scene)
   }
 }

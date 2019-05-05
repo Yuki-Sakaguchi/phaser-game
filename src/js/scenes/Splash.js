@@ -2,7 +2,13 @@
  * @fileoverview スプラッシュ画面
  */
 import Phaser from 'phaser'
-import { WIDTH, HEIGHT, SPRITE_NAME, SPRITE_IMAGE_PATH, SPRITE_JSON_PATH } from '../common/config'
+import {
+  WIDTH,
+  HEIGHT,
+  SPRITE_NAME,
+  SPRITE_IMAGE_PATH,
+  SPRITE_JSON_PATH
+} from '../common/config'
 import { centerGameObjects } from '../common/util'
 
 /**

@@ -36,8 +36,8 @@ npm run dev
 │   │   └── sample2.png
 │   ├── js
 │   │   ├── common # 共通で使うjsファイル
-│   │   ├── scenes # 各シーンごとのjsファイル
-│   │   ├── sprites # 各スプライトごとのjsファイル
+│   │   ├── scenes # 各シーンのjsファイル
+│   │   ├── class # 各クラスのjsファイル
 │   │   └── main.js # bundle元の実行ファイル
 │   └── scss
 │       └── bundle.scss
