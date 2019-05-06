@@ -7,12 +7,11 @@ import {
   UNIT_SIZE_HEIGHT,
   VERTICAL_UNIT,
   HORIZONTAL_UNIT,
-  MAP_OBJECT,
-  MAP_TOP_OBJECT
+  MAP_OBJECT
 } from '../common/config'
 import { createFrameName, getKeyName } from '../common/util'
 import { Unit } from '../class/Unit'
-import { Bomb } from '../class/Bomb'
+import { Bomber } from '../class/Bomb'
 
 /**
  * キャラクタークラス
@@ -32,7 +31,7 @@ export class Character extends Unit {
    * @param {boolean}      config.isHit 当たり判定
    * @param {number}       config.speed キャラクターの移動スピード
    */
-  constructor ({ scene, width = UNIT_SIZE_WIDTH, height = UNIT_SIZE_HEIGHT, gridX = (HORIZONTAL_UNIT - 1) / 2, gridY = (VERTICAL_UNIT - 1) / 2, frameName, isHit = true, speed = 4, direction = DIRECTION.FRONT, zIndex = 1 }) {
+  constructor ({ scene, width = UNIT_SIZE_WIDTH, height = UNIT_SIZE_HEIGHT, gridX = (HORIZONTAL_UNIT - 1) / 2, gridY = (VERTICAL_UNIT - 1) / 2, frameName, isHit = true, speed = 4, direction = DIRECTION.FRONT, zIndex }) {
     super({ scene, width, height, gridX, gridY, frameName: createFrameName(frameName, direction), isHit, depth: zIndex })
     this.scene = scene
     this.speed = speed
@@ -40,7 +39,7 @@ export class Character extends Unit {
     this.frameName = frameName
     this.moveX = 0
     this.moveY = 0
-    this.numOfBomb = 12
+    this.bomber = new Bomber(6, 4)
   }
 
   /**
@@ -73,7 +72,7 @@ export class Character extends Unit {
     let mY = Math.floor((this.y + this.moveY) / UNIT_SIZE_HEIGHT)
 
     // 移動禁止
-    if (MAP_OBJECT[mY][mX] >= 0 || MAP_TOP_OBJECT[mY][mX] >= 0) {
+    if (MAP_OBJECT[mY][mX] >= 0) {
       this.moveX = 0
       this.moveY = 0
     }
@@ -100,22 +99,20 @@ export class Character extends Unit {
   /**
    * 爆弾を配置
    */
-  bomb () {
+  putBomb () {
     if (this.moveX !== 0 || this.moveY !== 0) {
       return false
     }
     let mX = Math.floor(this.x / UNIT_SIZE_WIDTH)
     let mY = Math.floor(this.y / UNIT_SIZE_HEIGHT)
-    if (this.numOfBomb > 0) {
-      if (MAP_OBJECT[mY][mX] <= 0 || MAP_TOP_OBJECT[mY][mX] <= 0) {
-        MAP_OBJECT[mY][mX] = MAP_TOP_OBJECT[mY][mX] = 99
-        this.numOfBomb--
-        const bomb = new Bomb({
+    if (this.bomber.numOfBomb > 0) {
+      if (MAP_OBJECT[mY][mX] <= 0) {
+        MAP_OBJECT[mY][mX] = 99
+        this.bomber.numOfBomb--
+        this.bomber.put({
           scene: this.scene,
           gridX: mX,
-          gridY: mY,
-          frameName: 'bomb-0',
-          zIndex: 2
+          gridY: mY
         })
       }
     }

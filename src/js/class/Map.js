@@ -14,7 +14,7 @@ export class Map {
    * @constructor
    * @param {Phaser.Scene} scene マップを追加するシーン
    */
-  constructor ({ scene, mapDate, prefix, isHit = true, zIndex = 1 }) {
+  constructor ({ scene, mapDate, prefix, isHit = true, zIndex }) {
     this.scene = scene
     this.mapDate = mapDate
     this.prefix = prefix
@@ -41,7 +41,7 @@ export class Map {
           gridY: y,
           frameName: `${this.prefix}${[this.mapDate[y][x]]}`,
           isHit: this.isHit,
-          depth: this.zIndex
+          depth: this.zIndex ? this.zIndex : [this.mapDate[y][x]]
         })
       }
     }

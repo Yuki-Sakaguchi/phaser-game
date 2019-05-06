@@ -28,7 +28,7 @@ export class Unit extends Phaser.GameObjects.Container {
    * @param {number}       config.height オブジェクトの高さ
    * @param {number}       config.gridX X座標
    * @param {number}       config.gridY Y座標
-   * @param {string}       config.frameNamew 画像名
+   * @param {string}       config.frameName 画像名
    * @param {boolean}      config.isHit 当たり判定
    * @param {number}       config.depth z座標
    */

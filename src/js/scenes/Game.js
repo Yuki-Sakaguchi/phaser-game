@@ -5,7 +5,6 @@ import Phaser from 'phaser'
 import {
   MAP_BASE,
   MAP_OBJECT,
-  MAP_TOP_OBJECT,
   DIRECTION,
   SPRITE_NAME
 } from '../common/config'
@@ -37,15 +36,14 @@ export default class extends Phaser.Scene {
       mapDate: MAP_BASE,
       prefix: 'base-',
       isHit: false,
-      zIndex: 1
+      zIndex: 0
     })
 
     // マップオブジェクト
     this.mapBlock = new Map({
       scene: this,
       mapDate: MAP_OBJECT,
-      prefix: 'block-',
-      zIndex: 2
+      prefix: 'block-'
     })
 
     for (let key in DIRECTION) {
@@ -69,15 +67,7 @@ export default class extends Phaser.Scene {
       speed: 4,
       frameName: 'player',
       direction: DIRECTION.FRONT,
-      zIndex: 3
-    })
-
-    // 一番上のオブジェクト
-    this.mapTopBlock = new Map({
-      scene: this,
-      mapDate: MAP_TOP_OBJECT,
-      prefix: 'block-',
-      zIndex: 4
+      zIndex: 8
     })
   }
 
@@ -89,7 +79,7 @@ export default class extends Phaser.Scene {
     const cursorKeys = this.input.keyboard.createCursorKeys()
     this.player.move(cursorKeys)
     if (cursorKeys.space.isDown) {
-      this.player.bomb()
+      this.player.putBomb()
     }
   }
 }
