@@ -5,6 +5,7 @@ import Phaser from 'phaser'
 import {
   MAP_BASE,
   MAP_OBJECT,
+  MAP_OVER,
   DIRECTION,
   SPRITE_NAME
 } from '../common/config'
@@ -39,13 +40,23 @@ export default class extends Phaser.Scene {
       zIndex: 0
     })
 
-    // マップオブジェクト
+    // 当たり判定のあるオブジェクト
     this.mapBlock = new Map({
       scene: this,
       mapDate: MAP_OBJECT,
-      prefix: 'block-'
+      prefix: 'block-',
+      zIndex: 5
     })
 
+    // 当たり判定のないオブジェクト
+    this.mapOver = new Map({
+      scene: this,
+      mapDate: MAP_OVER,
+      prefix: 'block-',
+      zIndex: 10
+    })
+
+    // アニメーション作成
     for (let key in DIRECTION) {
       this.anims.create({
         key: `walk-${key.toLowerCase()}`,
