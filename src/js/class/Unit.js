@@ -41,6 +41,7 @@ export class Unit extends Phaser.GameObjects.Container {
     this.gridY = gridY
     this.frameName = frameName
     this.isHit = isHit
+    this.isDestructible = false
 
     // 当たり判定用の四角を生成
     this.rect = scene.add.rectangle(0, 0, width, height, 0xffffff)
@@ -53,34 +54,7 @@ export class Unit extends Phaser.GameObjects.Container {
     this.sprite.setOrigin(0.5, 1) // 画像は下辺に揃える
     scene.add.existing(this.sprite)
     this.add(this.sprite)
-
-    // 当たり判定を付ける場合
-    if (isHit) {
-      scene.physics.add.existing(this.rect)
-      this.rect.body.setImmovable()
-    }
-
     this.depth = depth
-
     scene.add.existing(this)
-  }
-
-  /**
-   * Unitクラスで作られたオブジェクトとの当たり判定
-   * @param {Unit} obj
-   */
-  collider (obj) {
-    if (!this.isHit) return false
-    this.scene.physics.add.collider(this.rect, obj.rect)
-  }
-
-  /**
-   * Unitクラスで作られたオブジェクトと当たった時の判定
-   * @param {Unit} obj
-   * @param {Function} func
-   */
-  overlap (obj, func) {
-    if (!this.isHit) return false
-    this.scene.physics.add.overlap(this.rect, obj.rect, func, null, this.scene)
   }
 }

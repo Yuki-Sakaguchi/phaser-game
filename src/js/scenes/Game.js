@@ -27,35 +27,9 @@ export default class extends Phaser.Scene {
   }
 
   /**
-   * ゲーム画面を構築
-   * @method
+   * 事前ロード
    */
-  create () {
-    // 背景
-    this.mapBg = new Map({
-      scene: this,
-      mapDate: MAP_BASE,
-      prefix: 'base-',
-      isHit: false,
-      zIndex: 0
-    })
-
-    // 当たり判定のあるオブジェクト
-    this.mapBlock = new Map({
-      scene: this,
-      mapDate: MAP_OBJECT,
-      prefix: 'block-',
-      zIndex: 5
-    })
-
-    // 当たり判定のないオブジェクト
-    this.mapOver = new Map({
-      scene: this,
-      mapDate: MAP_OVER,
-      prefix: 'block-',
-      zIndex: 10
-    })
-
+  preload () {
     // アニメーション作成
     for (let key in DIRECTION) {
       this.anims.create({
@@ -69,6 +43,37 @@ export default class extends Phaser.Scene {
         })
       })
     }
+  }
+
+  /**
+   * ゲーム画面を構築
+   * @method
+   */
+  create () {
+    // 背景
+    this.mapBg = new Map({
+      scene: this,
+      mapDate: MAP_BASE,
+      prefix: 'base-',
+      isHit: false,
+      depth: 0
+    })
+
+    // 当たり判定のあるオブジェクト
+    this.mapBlock = new Map({
+      scene: this,
+      mapDate: MAP_OBJECT,
+      prefix: 'block-',
+      depth: 5
+    })
+
+    // 当たり判定のないオブジェクト
+    this.mapOver = new Map({
+      scene: this,
+      mapDate: MAP_OVER,
+      prefix: 'block-',
+      depth: 10
+    })
 
     // プレイヤー
     this.player = new Character({
@@ -78,8 +83,9 @@ export default class extends Phaser.Scene {
       speed: 4,
       frameName: 'player',
       direction: DIRECTION.FRONT,
-      zIndex: 8
+      depth: 8
     })
+    this.player.setMap(this.mapBlock)
   }
 
   /**

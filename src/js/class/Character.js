@@ -31,15 +31,14 @@ export class Character extends Unit {
    * @param {boolean}      config.isHit 当たり判定
    * @param {number}       config.speed キャラクターの移動スピード
    */
-  constructor ({ scene, width = UNIT_SIZE_WIDTH, height = UNIT_SIZE_HEIGHT, gridX = (HORIZONTAL_UNIT - 1) / 2, gridY = (VERTICAL_UNIT - 1) / 2, frameName, isHit = true, speed = 4, direction = DIRECTION.FRONT, zIndex }) {
-    super({ scene, width, height, gridX, gridY, frameName: createFrameName(frameName, direction), isHit, depth: zIndex })
+  constructor ({ scene, width = UNIT_SIZE_WIDTH, height = UNIT_SIZE_HEIGHT, gridX = (HORIZONTAL_UNIT - 1) / 2, gridY = (VERTICAL_UNIT - 1) / 2, frameName, speed = 4, direction = DIRECTION.FRONT, depth }) {
+    super({ scene, width, height, gridX, gridY, frameName: createFrameName(frameName, direction), depth })
     this.scene = scene
     this.speed = speed
     this.direction = direction
     this.frameName = frameName
     this.moveX = 0
     this.moveY = 0
-    this.bomber = new Bomber(6, 4)
   }
 
   /**
@@ -116,6 +115,11 @@ export class Character extends Unit {
         })
       }
     }
+  }
+
+  setMap (map) {
+    this.map = map
+    this.bomber = new Bomber(this.map, 6, 4)
   }
 }
 

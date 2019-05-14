@@ -14,12 +14,11 @@ export class Map {
    * @constructor
    * @param {Phaser.Scene} scene マップを追加するシーン
    */
-  constructor ({ scene, mapDate, prefix, isHit = true, zIndex }) {
+  constructor ({ scene, mapDate, prefix, depth }) {
     this.scene = scene
     this.mapDate = mapDate
     this.prefix = prefix
-    this.isHit = isHit
-    this.zIndex = zIndex
+    this.depth = depth
     this.mapObj = []
     this.createMap()
   }
@@ -43,6 +42,17 @@ export class Map {
           isHit: this.isHit,
           depth: this.zIndex ? this.zIndex : [this.mapDate[y][x]]
         })
+        if (this.mapDate[y][x] === 1 ||
+          this.mapDate[y][x] === 16 ||
+          this.mapDate[y][x] === 17 ||
+          this.mapDate[y][x] === 18 ||
+          this.mapDate[y][x] === 19 ||
+          this.mapDate[y][x] === 20 ||
+          this.mapDate[y][x] === 21 ||
+          this.mapDate[y][x] === 22 ||
+          this.mapDate[y][x] === 23) {
+          this.mapObj[y][x].isDestructible = true
+        }
       }
     }
   }
